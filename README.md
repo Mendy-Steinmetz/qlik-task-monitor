@@ -92,14 +92,14 @@ settings:
 ## 📂 Project Structure
 
 ```
-qlik_monitor/
+qlik-task-monitor/
 │
 ├─ monitor.py              # Main runner
 ├─ config_loader.py        # Loads config and .env
 ├─ email_notifier.py       # Sends emails
 ├─ failure_filter.py       # Handles duplicate failure filtering
 ├─ history_logger.py       # Logs failure history
-├─ models.py                # TaskDetails dataclass
+├─ models.py               # TaskDetails dataclass
 ├─ qlik_api_client.py      # Handles Qlik API calls
 │
 ├─ config.example.yaml
