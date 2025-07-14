@@ -1,6 +1,7 @@
 # Qlik Sense Task Monitor
 
-A lightweight Python tool to monitor Qlik Sense tasks and send failure alerts via email.
+A lightweight Python tool to monitor Qlik Sense tasks, detect failures, and send email alerts.  
+Supports both **failure notifications** and **recovery notifications** in one consolidated email.
 
 ---
 
@@ -89,6 +90,41 @@ settings:
 
 ---
 
+## 🔄 How Notifications Work
+
+Each run checks for **task failures** and **recoveries**.  
+If at least one task fails, an email is sent **with both failed tasks and recovered tasks**.
+
+### 📊 Flow Diagram (Text-based)
+
+```
++-------------------------------+
+|    Fetch failed tasks from    |
+|        Qlik Sense API         |
++-------------------------------+
+              |
+              v
++-------------------------------+
+|  Compare with previous run    |
++-------------------------------+
+        /           \
+       /             \
+      v               v
+[Failed tasks]   [Recovered tasks]
+       \             /
+        \           /
+         +---------+
+         | Build email |
+         +-------------+
+              |
+              v
++-------------------------------+
+|   Send email with both lists  |
++-------------------------------+
+```
+
+---
+
 ## 📂 Project Structure
 
 ```
@@ -96,7 +132,7 @@ qlik-task-monitor/
 │
 ├─ monitor.py              # Main runner
 ├─ config_loader.py        # Loads config and .env
-├─ email_notifier.py       # Sends emails
+├─ email_notifier.py       # Sends failure & recovery emails
 ├─ failure_filter.py       # Handles duplicate failure filtering
 ├─ history_logger.py       # Logs failure history
 ├─ models.py               # TaskDetails dataclass

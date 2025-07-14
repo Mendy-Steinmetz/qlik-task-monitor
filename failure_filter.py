@@ -1,24 +1,31 @@
+# failure_filter.py
+
 from datetime import datetime, timedelta
 import csv
 import logging
 from typing import Dict, Tuple
 
-def load_previous_failures(path: str) -> Dict[Tuple[str, str], datetime]:
+def load_previous_failures(path: str):
     """
-    Load the most recent Run Time per (Task ID, Timestamp) from the failure history CSV.
+    Load the most recent Run Time per (Task ID, Timestamp) from the failure history CSV,
+    and also build a mapping of Task ID to Task Name.
 
     Args:
         path (str): Path to the CSV file.
 
     Returns:
-        dict: Mapping of (task_id, timestamp) -> latest run_time
+        tuple:
+            - dict: Mapping of (task_id, timestamp) -> latest run_time
+            - dict: Mapping of task_id -> task_name
     """
     history = {}
+    task_names_map = {}
     try:
         with open(path, newline='', encoding='utf-8') as f:
             rows = list(csv.DictReader(f))
             for row in rows:
                 task_id = row.get('Task ID')
+                task_name = row.get('Task Name')
                 failure_time = row.get('Timestamp')
                 run_time_str = row.get('Run Time')
                 if task_id and failure_time and run_time_str:
@@ -27,11 +34,13 @@ def load_previous_failures(path: str) -> Dict[Tuple[str, str], datetime]:
                         run_time = datetime.strptime(run_time_str.strip(), "%Y-%m-%d %H:%M:%S")
                         if key not in history or run_time > history[key]:
                             history[key] = run_time
+                        if task_name:
+                            task_names_map[task_id] = task_name
                     except ValueError:
                         continue
     except FileNotFoundError:
         logging.info(f"No previous failure history file found at {path}")
-    return history
+    return history, task_names_map
 
 
 def should_notify(task, previous_failures: Dict[Tuple[str, str], datetime], reminder_hours: int) -> bool:
@@ -57,7 +66,7 @@ def should_notify(task, previous_failures: Dict[Tuple[str, str], datetime], remi
     logging.debug(f"Checking task: {task.name} | Key: {key} | Last sent: {last_sent}")
 
     if not last_sent:
-        logging.info(f"First failure detected for task '{task.name}'")
+        logging.info(f"Task '{task.name}' failed. Previous failure: {task.last_failure_time}")
         return True
 
     now = datetime.now().replace(second=0, microsecond=0)

@@ -1,4 +1,4 @@
-# qlik_monitor/monitor.py
+# monitor.py
 import os
 import sys
 import logging
@@ -9,7 +9,6 @@ from history_logger import HistoryLogger
 from models import TaskDetails
 from failure_filter import load_previous_failures, should_notify
 from typing import List
-
 
 def setup_logging(log_file_path: str = None, log_level: str = 'INFO'):
     if not log_file_path:
@@ -29,7 +28,6 @@ def setup_logging(log_file_path: str = None, log_level: str = 'INFO'):
         ]
     )
     return logging.getLogger(__name__)
-
 
 def main():
     try:
@@ -56,17 +54,47 @@ def main():
         monitor = TaskMonitor(config)
         failed_tasks: List[TaskDetails] = monitor.get_failed_tasks()
 
-        previous_failures = load_previous_failures(config['settings'].get('failure_log_path', 'task_failures.csv'))
+        previous_failures, task_names_map = load_previous_failures(
+            config['settings'].get('failure_log_path', 'task_failures.csv')
+        )
         reminder_hours = config['settings'].get('reminder_hours', 24)
 
+        # Set last_failure_time for each task
+        for task in failed_tasks:
+            last_runs = [run_time for (tid, _), run_time in previous_failures.items() if tid == task.id]
+            if last_runs:
+                task.last_failure_time = max(last_runs).strftime('%Y-%m-%d %H:%M')
+            else:
+                task.last_failure_time = 'FIRST TIME'
+
+        # Detect recovered tasks from last run only
+        recovered_tasks = []
+        if previous_failures:
+            last_run_time = max(run_time for (_, _), run_time in previous_failures.items())
+
+            previous_failed_tasks_last_run = set(
+                task_id for (task_id, _), run_time in previous_failures.items()
+                if run_time == last_run_time
+            )
+
+            current_failed_task_ids = set(task.id for task in failed_tasks)
+
+            for task_id in previous_failed_tasks_last_run - current_failed_task_ids:
+                task_name = task_names_map.get(task_id, "Unknown Task Name")
+                recovered_tasks.append(f"{task_name} ({task_id})")
+        else:
+            recovered_tasks = []
+
+        # Determine which tasks need notification
         tasks_to_notify = []
         for task in failed_tasks:
             if should_notify(task, previous_failures, reminder_hours):
                 tasks_to_notify.append(task)
 
+        # Notify only if there are failures
         if tasks_to_notify:
             HistoryLogger.log_failures(tasks_to_notify, config)
-            EmailNotifier.notify(tasks_to_notify, config)
+            EmailNotifier.notify(tasks_to_notify, recovered_tasks, config)
         else:
             logger.info("No new task failures to notify.")
 
@@ -78,7 +106,6 @@ def main():
         if getattr(sys, 'frozen', False):
             input("Press Enter to exit...")
         sys.exit(1)
-
 
 if __name__ == '__main__':
     main()

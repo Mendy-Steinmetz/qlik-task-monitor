@@ -1,5 +1,6 @@
-# qlik_monitor/models.py
+#/models.py
 from dataclasses import dataclass
+from typing import Optional
 
 @dataclass
 class TaskDetails:
@@ -13,3 +14,4 @@ class TaskDetails:
     execution_interval: str
     log_file_path: str
     recipient: str
+    last_failure_time: Optional[str] = None
