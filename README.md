@@ -10,7 +10,7 @@ A lightweight Python tool to monitor Qlik Sense tasks and send failure alerts vi
 
 ```bash
 git clone https://github.com/Mendy-Steinmetz/qlik-task-monitor.git
-cd qlik_monitor
+cd qlik-task-monitor
 ```
 
 ---
@@ -107,13 +107,14 @@ qlik-task-monitor/
 ├─ requirements.txt
 ├─ README.md
 ├─ .gitignore
+├─ binaries/               # Pre-built EXE and config for quick use
 ```
 
 ---
 
 ## 🧰 Requirements
 
-Minimal dependencies:
+Required Python packages:
 
 ```
 requests
@@ -132,7 +133,7 @@ pip install -r requirements.txt
 
 ## 🏗️ Build EXE (Optional)
 
-If you want to create a standalone executable:
+To create a standalone executable:
 
 ```bash
 pip install pyinstaller
@@ -140,6 +141,34 @@ pyinstaller --onefile --name qlik_monitor monitor.py
 ```
 
 Output will be in `dist/qlik_monitor.exe`
+
+---
+
+## 🔧 Pre-built Executable
+
+For users who **don't have Python installed**, you can use the pre-built executable available in the [`binaries/`](./binaries) folder.
+
+### How to use:
+
+1️⃣ Go to the `binaries/` folder.
+
+2️⃣ Copy `config.example.yaml` to `config.yaml` and edit it with your Qlik Sense details.
+
+3️⃣ Copy `.env.example` to `.env` and fill in your credentials.
+
+4️⃣ Run `qlik_monitor.exe`
+
+That's it!  
+No Python installation is required.
+
+---
+
+### 📦 Contents of `binaries/`:
+
+- `qlik_monitor.exe` – The standalone executable  
+- `config.example.yaml` – Sample configuration file  
+- `.env.example` – Sample environment variables  
+- `README.md` – Quick instructions for binary usage
 
 ---
 
@@ -168,4 +197,3 @@ I’d love to hear your feedback and ideas!
 
 This project is licensed under the **MIT License**.  
 Feel free to use, modify, and distribute as you wish.
-
