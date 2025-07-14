@@ -9,7 +9,7 @@ A lightweight Python tool to monitor Qlik Sense tasks and send failure alerts vi
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://your-repo-url.git
+git clone https://github.com/Mendy-Steinmetz/qlik-task-monitor.git
 cd qlik_monitor
 ```
 
