@@ -1,0 +1,4 @@
+requests
+requests_ntlm
+python-dotenv
+PyYAML

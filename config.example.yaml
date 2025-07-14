@@ -1,0 +1,20 @@
+logging:
+  global_log_level: INFO
+  log_file: qlik_monitor.log
+
+email:
+  smtp_server: smtp.gmail.com
+  smtp_port: 587
+  sender_email: your_sender_email@example.com
+  receiver_email: default_receiver@example.com
+
+settings:
+  api_timeout: 30
+  api_max_retries: 3
+  api_retry_delay: 5
+  log_archive_path: \\qlikServer\QlikShare\ArchivedLogs
+  failure_log_path: task_failures.csv
+  reminder_hours: 24
+  custom_property_name: custom_property_name
+  api_debug_output: false
+  dry_run: true
