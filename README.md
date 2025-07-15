@@ -125,6 +125,14 @@ If at least one task fails, an email is sent **with both failed tasks and recove
 
 ---
 
+### 📧 Email Example
+
+This is how the email notification looks:
+
+![Email Example](./docs/images/email_example.png)
+
+---
+
 ## 📂 Project Structure
 
 ```
@@ -145,6 +153,14 @@ qlik-task-monitor/
 ├─ .gitignore
 ├─ binaries/               # Pre-built EXE and config for quick use
 ```
+
+---
+
+## ⚙️ Console Run Example
+
+This is how a typical run looks from the command line:
+
+![Console Run](./docs/images/console_run.png)
 
 ---
 
