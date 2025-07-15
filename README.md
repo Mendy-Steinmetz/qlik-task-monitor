@@ -5,6 +5,12 @@ Supports both **failure notifications** and **recovery notifications** in one co
 
 ---
 
+## 📺 Demo Video
+
+[Watch a short demo video here](https://www.loom.com/share/df2bd53d0ebe40d896447592000ea154)
+
+---
+
 ## 🚀 Quick Start
 
 ### 1️⃣ Clone the repository
